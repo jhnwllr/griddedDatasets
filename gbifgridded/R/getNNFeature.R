@@ -1,7 +1,16 @@
-# Function to compute nearest neighbor features for a new download
-# D - input data from a GBIF download
-# key - focal key
-# k - number of nearest neighbors to compute
+#' Add taxon info to a data.frame.
+#'
+#' @param .data data.frame to be passed in probably through a pipe %>%
+#' @param key unquoted column name for taxonkeys to be passed in
+#' @return Returns data.frame of results.
+#' @examples
+#'
+#'\dontrun{
+#'
+#' D %>% addTaxonInfo(specieskey)
+#'
+#'}
+#'
 
 getNNFeature = function(D,key,k) { # nearest neighbor features
 
