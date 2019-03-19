@@ -1,1 +1,6 @@
 exportPattern("^[[:alpha:]]+")
+importFrom(magrittr,"%>%")
+importFrom(roperators,"%+%")
+import(purrr)
+import(tibble)
+import(dplyr)

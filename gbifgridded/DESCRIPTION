@@ -8,3 +8,5 @@ Description: package to update gridded datasets tags on gbif.org
 License: CC-0
 Encoding: UTF-8
 LazyData: true
+Imports: httr, roperators, purrr, dplyr, tibble
+RoxygenNote: 6.1.1

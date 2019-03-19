@@ -1,4 +1,4 @@
-#' Add taxon info to a data.frame.
+#' compute the nn-features used to detected gridded datasets
 #'
 #' @param .data data.frame to be passed in probably through a pipe %>%
 #' @param key unquoted column name for taxonkeys to be passed in
