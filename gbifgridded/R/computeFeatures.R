@@ -1,13 +1,16 @@
-#' compute the nn-features used to detected gridded datasets
+#' compute the nn-features used to detected gridded datasets for all datasets in a file
 #'
-#' @param .data data.frame to be passed in probably through a pipe %>%
-#' @param key unquoted column name for taxonkeys to be passed in
-#' @return Returns data.frame of results.
+#' @param file a file with occurrence points probably named "uniquePointsDatasetkey.csv"
+#' @param saveDir where to save where to save griddedDatasets.rda
+#' @return nothing. Saves griddedDatasets.rda in SaveDir.
 #' @examples
 #'
 #'\dontrun{
 #'
-#' D %>% addTaxonInfo(specieskey)
+#' file = "uniquePointsDatasetkey.csv"" # use file from hive part above
+#' saveDir = "C:/Users/ftw712/Desktop/" # where to save griddedDatasets.rda
+#'
+#' computeFeatures(file,saveDir) # will page through uniquePointsDatasetkey.csv file by dataset to compute NN-features
 #'
 #'}
 #'

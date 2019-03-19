@@ -1,18 +1,19 @@
-#' Add taxon info to a data.frame.
+#' Get the nn-features for gridded dataset classification
 #'
-#' @param .data data.frame to be passed in probably through a pipe %>%
-#' @param key unquoted column name for taxonkeys to be passed in
+#' @param D data.frame with named columns of decimalLongitude and decimalLatitude
+#' @param key a character string of a uuid of a dataset
+#' @param k do not change from 4
 #' @return Returns data.frame of results.
 #' @examples
 #'
 #'\dontrun{
 #'
-#' D %>% addTaxonInfo(specieskey)
+#'
 #'
 #'}
 #'
 
-getNNFeature = function(D,key,k) { # nearest neighbor features
+getNNFeature = function(D,key,k=4) { # nearest neighbor features
 
   # Subset data by focal key
   D = D %>% filter(datasetKey == key)
