@@ -19,8 +19,9 @@ updateAllGriddedMachineTags = function(saveDir,authentication) {
 
   L = filterGriddedDatasets(saveDir) %>% transpose() # turn data.frame into a list to feed into map createMachineTag
 
-  # api_uat = "http://api.gbif-uat.org/v1/dataset/"
-  api = "http://api.gbif.org/v1/dataset/"
+  # api = "http://api.gbif-dev.org/v1/dataset/" # dev
+  # api_uat = "http://api.gbif-uat.org/v1/dataset/" # uat
+  api = "http://api.gbif.org/v1/dataset/" # prod
 
   L %>% map(~ createMachineTag(datasetkey = .x$datasetkey,
                                api = api,

@@ -6,10 +6,10 @@ createMachineTag = function(datasetkey,api,namespace,name,value,embedValueList=T
 
   url = api %+% datasetkey %+% "/machineTag"
   # need to encode json so that the list gets translated into json
-  response = httr::POST(url,authenticate(user,password),body=machineTag,encode="json") # post request to gbif api
+  response = httr::POST(url,httr::authenticate(user,password),body=machineTag,encode="json") # post request to gbif api
 
   print(url)
   print(datasetkey)
-  print(http_status(response)$category) # print if was successful
-  return(http_status(response)$category)
+  print(httr::http_status(response)$category) # print if was successful
+  return(httr::http_status(response)$category)
 }

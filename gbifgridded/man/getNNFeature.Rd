@@ -2,26 +2,28 @@
 % Please edit documentation in R/getNNFeature.R
 \name{getNNFeature}
 \alias{getNNFeature}
-\title{Add taxon info to a data.frame.}
+\title{Get the nn-features for gridded dataset classification}
 \usage{
-getNNFeature(D, key, k)
+getNNFeature(D, key, k = 4)
 }
 \arguments{
-\item{key}{unquoted column name for taxonkeys to be passed in}
+\item{D}{data.frame with named columns of decimalLongitude and decimalLatitude}
 
-\item{.data}{data.frame to be passed in probably through a pipe %>%}
+\item{key}{a character string of a uuid of a dataset}
+
+\item{k}{do not change from 4}
 }
 \value{
 Returns data.frame of results.
 }
 \description{
-Add taxon info to a data.frame.
+Get the nn-features for gridded dataset classification
 }
 \examples{
 
 \dontrun{
 
-D \%>\% addTaxonInfo(specieskey)
+
 
 }
 

@@ -57,14 +57,62 @@ getGriddedKeys = function(minDistance = 0, minCount = 0, minPercent = 0, limit=1
     map(~ tibble::enframe(.x)) %>% # convert into tibble
     map(~ tidyr::spread(.x,name,value)) %>% # rearrange tibble
     plyr::rbind.fill() %>% # combine all the results
-    mutate(datasetkey = datasetkeys)
+    mutate(datasetkey = datasetkeys) %>%
+    tidyr::unnest()
 
   # begin filtering to get keysToFilter
   keysToFilter = D %>%
-    filter(distanceNN > !!minDistance) %>%
-    filter(distanceNN > !!minCount) %>%
-    filter(distanceNN > !!minPercent) %>%
+    filter(distanceNN >= !!minDistance) %>%
+    filter(distanceNN >= !!minCount) %>%
+    filter(distanceNN >= !!minPercent)%>%
     pull(datasetkey)
 
   return(keysToFilter)
 }
+
+
+getGriddedData = function(minDistance = 0, minCount = 0, minPercent = 0, limit=1000) {
+
+  datasetkeys = httr::GET("http://api.gbif.org/v1/dataset?machineTagNamespace=griddedDataSet.jwaller.gbif.org&limit=" %+% limit) %>%
+    httr::content() %>%
+    purrr::pluck("results") %>% # used to access elements in list
+    purrr::map_chr(~ .x$key) # get the content of the api call
+
+  L = httr::GET("http://api.gbif.org/v1/dataset?machineTagNamespace=griddedDataSet.jwaller.gbif.org&limit=" %+% limit) %>%
+    httr::content() %>% # get the content of the api call
+    purrr::pluck("results") %>% # used to access elements in list
+    purrr::map(~ .x$machineTags) %>%
+    purrr::flatten() # got down one layer in a list
+
+  namespace = L %>% map_chr(~ .x$namespace)
+  value = L %>% map_chr(~ .x$value)
+
+  D = tibble(value=value,namespace=namespace) %>%
+    filter(namespace == "griddedDataSet.jwaller.gbif.org")
+
+  # translate the embeded json into a data.frame
+  D = D %>% pull(value) %>%
+    map(~ jsonlite::fromJSON(.x)) %>% # convert JSON string into R list
+    map(~ tibble::enframe(.x)) %>% # convert into tibble
+    map(~ tidyr::spread(.x,name,value)) %>% # rearrange tibble
+    plyr::rbind.fill() %>% # combine all the results
+    glimpse() %>%
+    mutate(datasetkey = datasetkeys) %>%
+    tidyr::unnest()
+
+  # begin filtering to get keysToFilter
+  keysToFilter = D %>%
+    filter(distanceNN >= !!minDistance) %>%
+    filter(distanceNN >= !!minCount) %>%
+    filter(distanceNN >= !!minPercent)
+
+  # %>%
+    # pull(datasetkey)
+
+  return(keysToFilter)
+}
+
+
+
+
+

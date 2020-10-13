@@ -1,7 +1,7 @@
 deleteAllGriddedMachineTags = function(authentication) {
   api = "http://api.gbif.org/v1/dataset/"
 
-  keysToDelete = gbifapi::getGriddedDataSetKeys()
+  keysToDelete = gbifgridded::getGriddedKeys()
 
   keysToDelete %>% map(~ deleteMachineTag(datasetkey=.x,
                                           api=api,

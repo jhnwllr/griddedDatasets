@@ -21,10 +21,12 @@ computeFeatures = function(file,saveDir = "C:/Users/ftw712/Desktop/") {
   keysToSkip = c("4fa7b334-ce0d-4e88-aaae-2e0c138d049e")
 
   getIndexList = function(file) { # get indices so that we can only read in the correct
-    keys = data.table::fread(file,select="V4",fill=TRUE) %>%
-      as.data.frame() %>%
-      rename(datasetkey=V4)
-    indexList = keys %>% group_by(datasetkey) %>% attr("indices")
+    keys = data.table::fread(file,select="datasetkey",fill=TRUE) %>%
+      as.data.frame()
+
+    indexList = keys %>% group_by(datasetkey) %>% attr("groups") %>% pull(.rows)
+    # indexList = keys %>% group_by(datasetkey) %>% attr("indices") # does not work with dplyr update
+    return(indexList)
   }
 
   indexList = getIndexList(file)

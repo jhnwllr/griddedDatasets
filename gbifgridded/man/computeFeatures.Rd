@@ -2,27 +2,18 @@
 % Please edit documentation in R/computeFeatures.R
 \name{computeFeatures}
 \alias{computeFeatures}
-\title{Add taxon info to a data.frame.}
+\title{compute the nn-features used to detected gridded datasets for all datasets in a file}
 \usage{
 computeFeatures(file, saveDir = "C:/Users/ftw712/Desktop/")
 }
 \arguments{
-\item{.data}{data.frame to be passed in probably through a pipe %>%}
+\item{file}{a file with occurrence points probably named "uniquePointsDatasetkey.csv"}
 
-\item{key}{unquoted column name for taxonkeys to be passed in}
+\item{saveDir}{where to save where to save griddedDatasets.rda}
 }
 \value{
-Returns data.frame of results.
+nothing. Saves griddedDatasets.rda in SaveDir.
 }
 \description{
-Add taxon info to a data.frame.
-}
-\examples{
-
-\dontrun{
-
-D \%>\% addTaxonInfo(specieskey)
-
-}
-
+compute the nn-features used to detected gridded datasets for all datasets in a file
 }

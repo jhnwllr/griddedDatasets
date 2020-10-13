@@ -5,3 +5,7 @@
 authentication.rda
 /data/uniquePointsDatasetkey.csv
 /gbifgridded/.Rhistory
+/gbif_gridded_spark/target/
+/gbif_gridded_spark/.idea/
+/gbif_gridded_spark/data/
+/gbif_gridded_spark/scala/
