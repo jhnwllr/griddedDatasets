@@ -1,4 +1,73 @@
 
+# update machine tags using machine tagger 
+load("C:/Users/ftw712/Desktop/griddedDatasets/authentication.rda")
+
+library(dplyr)
+library(gbifMachineTagger)
+library(purrr)
+
+d = readr::read_tsv("http://download.gbif.org/custom_download/jwaller/gridded_datasets") %>% 
+filter(percent >= 0.3) %>% # only with high percentage of points having same nn-distance
+filter(min_dist > 0.02) %>% # get only with distance greater than minimum 0.01
+filter(min_dist_count > 30) %>%
+select(datasetkey,percentNN=percent,countNN=min_dist_count,distanceNN=min_dist,uniqueLatLon=total_count) %>%
+glimpse()
+
+L = d %>% transpose()
+
+# api = "http://api.gbif-uat.org/v1/dataset/" # uat
+api = "http://api.gbif.org/v1/dataset/" # prod
+
+L %>% map(~ 
+createMachineTag(
+datasetkey=.x$datasetkey,
+namespace="griddedDataSet.jwaller.gbif.org",
+name="griddedDataset",
+value=.x[2:4],
+embedValueList=TRUE,
+user = authentication$user,
+password = authentication$password,
+api=api)
+)
+
+# createMachineTag(datasetkey = .x$datasetkey,
+# api = api,
+# namespace = "griddedDataSet.jwaller.gbif.org",
+# name = "griddedDataset",
+# value = .x[2:4],
+# embedValueList=TRUE,
+# user = authentication$user,
+# password = authentication$password))
+
+
+# %>% transpose()
+
+updateAllGriddedMachineTags = function(saveDir,authentication) {
+
+
+L = filterGriddedDatasets(saveDir) %>% transpose() # turn data.frame into a list to feed into map createMachineTag
+
+# api = "http://api.gbif-dev.org/v1/dataset/" # dev
+# api_uat = "http://api.gbif-uat.org/v1/dataset/" # uat
+api = "http://api.gbif.org/v1/dataset/" # prod
+
+L %>% map(~ 
+createMachineTag(datasetkey = .x$datasetkey,
+api = api,
+namespace = "griddedDataSet.jwaller.gbif.org",
+name = "griddedDataset",
+value = .x[2:4],
+embedValueList=TRUE,
+user = authentication$user,
+password = authentication$password))
+
+}
+
+
+
+
+if(FALSE) { # check results against previous R version 
+
 library(gbifMachineTagger)
 library(dplyr)
 library(purrr)
@@ -66,4 +135,4 @@ tagged[!tagged %in% spark]
 
 # {"percentNN":0.9951,"countNN":608,"distanceNN":0.04}
 
-
+}

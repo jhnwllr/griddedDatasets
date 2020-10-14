@@ -24,13 +24,13 @@ cd
 sbt package
 ```
 
-Copy `gridded_datasets_2.11-0.1.jar` on to server.
+**Copy** `gridded_datasets_2.11-0.1.jar` on to server.
 
 ```
 scp -r /cygdrive/c/Users/ftw712/Desktop/gbif_gridded_spark/target/scala-2.11/gridded_datasets_2.11-0.1.jar jwaller@c5gateway-vh.gbif.org:/home/jwaller/
 ```
 
-Run with `spark2-submit`
+**Run** with `spark2-submit`
 
 ```
 spark2-submit --num-executors 40 --executor-cores 5 --driver-memory 8g --driver-cores 4 --executor-memory 16g gridded_datasets_2.11-0.1.jar
@@ -69,6 +69,37 @@ Use [machineTagger](https://github.com/jhnwllr/gbifMachineTagger)
 
 ```
 devtools::install_github("jhnwllr/gbifMachineTagger")
+
+# update machine tags using machine tagger 
+load("C:/Users/ftw712/Desktop/griddedDatasets/authentication.rda")
+
+library(dplyr)
+library(gbifMachineTagger)
+library(purrr)
+
+d = readr::read_tsv("http://download.gbif.org/custom_download/jwaller/gridded_datasets") %>% 
+filter(percent >= 0.3) %>% # only with high percentage of points having same nn-distance
+filter(min_dist > 0.02) %>% # get only with distance greater than minimum 0.01
+filter(min_dist_count > 30) %>%
+select(datasetkey,percentNN=percent,countNN=min_dist_count,distanceNN=min_dist,uniqueLatLon=total_count) %>%
+glimpse()
+
+L = d %>% transpose()
+
+# api = "http://api.gbif-uat.org/v1/dataset/" # uat
+api = "http://api.gbif.org/v1/dataset/" # prod
+
+L %>% map(~ 
+createMachineTag(
+datasetkey=.x$datasetkey,
+namespace="griddedDataSet.jwaller.gbif.org",
+name="griddedDataset",
+value=.x[2:4],
+embedValueList=TRUE,
+user = authentication$user,
+password = authentication$password,
+api=api)
+)
 
 
 ```
