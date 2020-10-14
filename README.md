@@ -1,4 +1,4 @@
-# Repository for updating griddedDataSet.jwaller.gbif.org Tags
+## Repository for updating griddedDataSet.jwaller.gbif.org Tags
 
 Use these steps to update gridded dataset machine tags on GBIF https://www.gbif.org/. 
 
@@ -11,29 +11,46 @@ http://api.gbif.org/v1/dataset?machineTagNamespace=griddedDataSet.jwaller.gbif.o
 
 ```
 
-# spark-scala version for updating machine tags 
-
+## spark-scala version for updating machine tags 
 
 This port uses [Local Sensitivity Hashing](https://databricks.com/session/locality-sensitive-hashing-by-spark) in order to do nearest neighbor search with euclidean distances. Using some other search space optimizer might work better. 
 
 It currently works on datasets that have less than around 50K-100K unique points.  The R version had the a similar limit. With max set at **50K uniques points** it runs in 13 minutes on the current GBIF cluster set up. 
 
-# Build 
+**Build** 
 
 ```
 cd 
 sbt package
 ```
 
+Copy `gridded_datasets_2.11-0.1.jar` on to server.
+
 ```
 scp -r /cygdrive/c/Users/ftw712/Desktop/gbif_gridded_spark/target/scala-2.11/gridded_datasets_2.11-0.1.jar jwaller@c5gateway-vh.gbif.org:/home/jwaller/
 ```
+
+Run with `spark2-submit`
 
 ```
 spark2-submit --num-executors 40 --executor-cores 5 --driver-memory 8g --driver-cores 4 --executor-memory 16g gridded_datasets_2.11-0.1.jar
 ```
 
+This is produce a file called **gridded_datasets** in hdfs. 
+
+Export file for download:  
+
 ```
+import sys.process._
+
+val save_table_name = "gridded_datasets"
+
+val df_export = spark.read.
+option("sep", "\t").
+option("header", "true").
+option("inferSchema", "true").
+csv(save_table_name)
+
 // export and copy file to right location 
 (s"hdfs dfs -ls")!
 (s"rm " + save_table_name)!
@@ -45,17 +62,20 @@ Seq("sed","-i",header,save_table_name).!
 (s"rm /mnt/auto/misc/download.gbif.org/custom_download/jwaller/" + save_table_name)!
 (s"ls -lh /mnt/auto/misc/download.gbif.org/custom_download/jwaller/")!
 (s"cp /home/jwaller/" + save_table_name + " /mnt/auto/misc/download.gbif.org/custom_download/jwaller/" + save_table_name)!
+
+```
+
+Use [machineTagger](https://github.com/jhnwllr/gbifMachineTagger)
+
+```
+devtools::install_github("jhnwllr/gbifMachineTagger")
+
+
 ```
 
 
+## R version to update machine tags locally (largely deprecated)  
 
-
-
-
-
-# R version to update machine tags locally (largely deprecated)  
-
-# Update all the machine tags.
 
 These steps are only possible if you have access to the registry and some cluster with hive installed. 
 
