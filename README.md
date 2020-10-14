@@ -20,7 +20,7 @@ It currently works on datasets that have less than around 50K-100K unique points
 **Build** 
 
 ```
-cd 
+cd \griddedDatasets\gbif_gridded_spark\
 sbt package
 ```
 
@@ -38,7 +38,7 @@ spark2-submit --num-executors 40 --executor-cores 5 --driver-memory 8g --driver-
 
 This is produce a file called **gridded_datasets** in hdfs. 
 
-Export file for download:  
+**Export** file for download:  
 
 ```
 import sys.process._
